@@ -33,9 +33,10 @@ int main(int argc, char *argv[]){
     SDL_Quit();
 
     cpu cpu_ctx;
-    char* file_name = "GAMES/GAMES/CAVE.ch8";
+    char* file_name = "GAME/pokemonYellow.gb";
     dump_game_content(file_name);
-    test();
-    debugger(&cpu_ctx);
+    dump_game_to_file(file_name, "GAME/pokemonyellowdump.txt");
+    // test();
+    // debugger(&cpu_ctx);
     return 0;
 } 

@@ -4,6 +4,18 @@
 #include <stdint.h>
 #include "common.h"
 
+class gb_memory{
+    private:
+        uint8_t ram[GB_RAM_SIZE];
+        uint8_t cartridge_memory[ROM_MAX_SIZE_BYTES];
+    public:
+        void init_gb_memory();
+        void set_memory(int address, uint8_t value);
+        uint8_t memory_get_one_byte(int address);
+        uint16_t memory_get_two_bytes(int address);
+        
+};
+
 // this struct emulates the memory module
 typedef struct memory{
     uint8_t ram[GB_RAM_SIZE];
