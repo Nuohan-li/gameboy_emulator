@@ -1,2 +1,28 @@
-all: cpu.cpp main.cpp debug.cpp memory.cpp 
-	g++ -Wall -Wextra cpu.cpp memory.cpp main.cpp debug.cpp -I win64_sdl/include -L win64_sdl/lib -lmingw32 -lSDL2main -lSDL2
+
+# Detect the operating system
+ifeq ($(OS),Windows_NT)
+    # windows
+    EXECUTABLE = a.exe
+    INCLUDE = -I win64_sdl/include -L win64_sdl/lib -lmingw32 -lSDL2main -lSDL2
+else
+    UNAME_S := $(shell uname -s)
+    ifeq ($(UNAME_S),Darwin)
+        # mac
+        EXECUTABLE = a
+        INCLUDE = -lSDL2main -lSDL2 
+    else
+        # linux
+        EXECUTABLE = a.out
+        INCLUDE = -lSDL2main -lSDL2 
+    endif
+endif
+
+# Default target
+all: $(EXECUTABLE)
+
+# Source files
+SRCS = main.cpp memory.cpp cpu.cpp debug.cpp 
+
+# Build the executable
+$(EXECUTABLE): $(SRCS)
+	g++ -Wall -Wextra $(SRCS) -o $(EXECUTABLE) $(INCLUDE)

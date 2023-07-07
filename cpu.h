@@ -25,7 +25,7 @@ typedef struct cpu{
 
     // different components defined in other header files
     // input input;
-    memory memory;
+    struct memory memory;
     // display display;
 
 } cpu;
