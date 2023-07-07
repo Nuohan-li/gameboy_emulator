@@ -2,22 +2,32 @@
 #include <string.h>
 #include "memory.h"
 
-void memory_init(memory *mem){
-    memset(mem, 0, GB_RAM_SIZE);
+
+void gb_memory::init_ram(){
+    memset(this->ram, 0, GB_RAM_SIZE_BYTES);
 }
 
-void memory_set(memory *mem, int address, uint8_t value){
-    mem->ram[address] = value;
+void gb_memory::init_cartridge(){
+    memset(this->ram, 0, ROM_MAX_SIZE_BYTES);
 }
 
-uint8_t memory_get_one_byte(memory *mem, int address){
-    return mem->ram[address];
+void gb_memory::init_gb_memory(){
+    init_ram();
+    init_cartridge();
 }
 
-uint16_t memory_get_two_bytes(memory *mem, int address){
-    uint16_t two_bytes = 0;
-    uint8_t byte1 = memory_get_one_byte(mem, address);
-    uint8_t byte2 = memory_get_one_byte(mem, address + 1);
-    two_bytes = (byte1 << 8) | byte2; 
-    return two_bytes;
+void gb_memory::set_memory(int address, uint8_t value){
+    this->ram[address] = value;
+}
+uint8_t gb_memory::memory_get_one_byte(int address){
+    return this->ram[address];
+}
+uint16_t gb_memory::memory_get_two_bytes(int address){
+    uint8_t byte1 = memory_get_one_byte(address);
+    uint8_t byte2 = memory_get_one_byte(address + 1);
+    return ((byte1 << 8) | byte2);
+}
+
+void gb_memory::load_game(uint8_t *game, uint64_t size){
+    memcpy(this->cartridge_memory, game, size);
 }

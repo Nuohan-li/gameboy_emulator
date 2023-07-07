@@ -4,36 +4,49 @@
 
 #include <stdio.h>
 #include <stdint.h>
+#include "common.h"
 #include "memory.h"
 // #include "display.h"
 // #include "input.h"
 
-// this struct emulates the registers -> section 2.2 in the reference
-typedef struct cpu{
-    // V array represents 16 one byte general purpose registers used by CHIP8
-    uint8_t V[16];
-    // special 16 bit register in chip-8, used to store memory address
-    uint16_t I;
-    // see section 2.5 reference
-    uint8_t delay_timer;
-    // see section 2.5 reference
-    uint8_t sound_timer;
-    // 16bit, points to the next instruction that will be run after the current one
-    uint16_t program_counter;
-    // 8 bit, points to the topmost level of the stack
-    uint8_t stack_pointer;
 
-    // different components defined in other header files
-    // input input;
-    struct memory memory;
-    // display display;
+/*
+    The gameboy has 8 registers named A,B,C,D,E,F,H,L each are 8-Bits in size. 
+    However these registers are often paired to form 4 16-Bit registers. 
+    The pairings are AF, BC, DE, HL. AF is less frequently used then the others 
+    because A is the accumulator and F is the flag register so working with them as a 
+    pair is less frequent than the others. HL is used very frequently mainly for referring to game memory.
 
-} cpu;
+*/
+union Registers{
+    uint16_t value;
+    struct{
+        uint8_t lo;  // lo defined first because my windows laptop is little endian
+        uint8_t hi;
+    }__attribute__((__packed__));
+};
 
-// initialize the CPU -> set everything to 0
-void cpu_init(cpu *cpu);
+class cpu{
+    private:
+        Registers AF;
+        Registers BC;
+        Registers DE;
+        Registers HL;
+        Registers PC;
+        // some instructions uses only the lower byte or upper byte of the stack pointer                
+        Registers SP; 
+        gb_memory memory;
+    public:
+        void cpu_init();
+        void load_game(const char *game_file);
+        void execute_opcode(uint16_t opcode);
 
-// load th game into the memory 
-void load_game(cpu *cpu, uint8_t *game, size_t gamesize);
+};
 
-void execute_opcode(cpu *cpu, uint16_t opcode);
+// // initialize the CPU -> set everything to 0
+// void cpu_init(cpu *cpu);
+
+// // load th game into the memory 
+// void load_game(cpu *cpu, uint8_t *game, size_t gamesize);
+
+// void execute_opcode(cpu *cpu, uint16_t opcode);
