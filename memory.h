@@ -2,9 +2,7 @@
 
 #include <stdio.h>
 #include <stdint.h>
-
-#define GB_RAM_SIZE 4096
-#define GAME_MEM_SPACE_BEGINNING 512
+#include "common.h"
 
 // this struct emulates the memory module
 typedef struct memory{

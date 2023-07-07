@@ -6,15 +6,17 @@
 #ifdef __linux__ 
     #include<SDL2/SDL.h>
 #elif __WIN64__
-    #include "SDL2/SDL.h"
+    #include "win64_sdl/include/SDL2/SDL.h"
 #endif
+
+using namespace std;
 
 int main(int argc, char *argv[]){
     
     SDL_Init(SDL_INIT_EVERYTHING);
     SDL_Window *window = SDL_CreateWindow("SDL Test", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 600, SDL_WINDOW_ALLOW_HIGHDPI);
     if (window == NULL) {
-        printf("SDL_CreateWindow error: %s\n", SDL_GetError());
+        cout << "SDL_CreateWindow error: " <<  SDL_GetError() << endl;
         return 1;
     }
 
