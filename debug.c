@@ -1,9 +1,60 @@
 #include <stdio.h>
 #include <stdint.h>
+#include <stdbool.h>
 #include <string.h>
 #include <ctype.h>
+#include <stdlib.h>
+#include "common.h"
 #include "debug.h"
 #include "memory.h"
+
+
+#include <stdlib.h>
+#include <execinfo.h>
+
+void printStackTrace() {
+    void* callstack[100];
+    int frames = backtrace(callstack, sizeof(callstack) / sizeof(void*));
+    char** symbols = backtrace_symbols(callstack, frames);
+    
+    printf("Program Stack Trace:\n");
+    for (int i = 0; i < frames; ++i) {
+        printf("%s\n", symbols[i]);
+    }
+    
+    free(symbols);
+}
+
+void log_trace(bool write_to_file, const char *format, ...){
+    // va_arg allows us to access args after format
+    va_list args;
+    // va_starts initializes the va_list
+    va_start(args, format);
+
+    vprintf(format, args);
+
+    if(write_to_file){
+        FILE* file = fopen("error_log.txt", "a");
+        if (file != NULL) {
+            vfprintf(file, format, args);
+            fprintf(file, "\n");
+            fclose(file);
+        }
+    }
+    va_end(args);
+}
+
+
+void log_error(const char *error_msg, const char *component, bool write_to_file){
+    printf("%s error: %s\n",component, error_msg);
+    if(write_to_file){
+        FILE* file = fopen("error_log.txt", "a");
+        if (file != NULL) {
+            fprintf(file, "%s error: %s\n", component, error_msg);
+            fclose(file);
+        }
+    }
+}
 
 // dump the content of the memory 
 void dump_memory(uint8_t *memory, size_t size_byte){
@@ -133,5 +184,9 @@ void test(){
     // memory test 
     cpu cpu;
     cpu_init(&cpu);
-    dump_memory(&cpu.memory->ram[0xFF05], 0xFB);
+    // dump_memory(&cpu.memory->ram[0xFF05], 0xFB);
+    // printf("at address 0xFF05 - %02X\n", memory_get_one_byte(cpu.memory, 0xFF05));
+    // printf("at address 0xFF10 - %02X\n", memory_get_one_byte(cpu.memory, 0xFF10));
+    // printf("at address 0xFF05 - %02X\n", memory_get_one_byte(cpu.memory, 0xFF05));
+    // printf("at address 0xFF05 - %02X\n", memory_get_one_byte(cpu.memory, 0xFF05));
 }

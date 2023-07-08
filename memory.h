@@ -5,6 +5,7 @@
 #include "common.h"
 
 /*
+https://gbdev.io/pandocs/Memory_Map.html
 MEMORY MAP
 +-----------+
 | 0000-3FFF | 16KB ROM Bank 00 (in cartridge, fixed at bank 00)
@@ -34,9 +35,32 @@ MEMORY MAP
 */ 
 
 typedef struct gb_memory{
-    uint8_t ram[GB_RAM_SIZE_BYTES];
     uint8_t cartridge_memory[ROM_MAX_SIZE_BYTES];
-}gb_memory;
+    struct internal_memory{
+        // 0x0000 to 0x3FFF
+        uint8_t ROM_bank0[0x4000]; 
+        // 0x4000 to 0x7FFF
+        uint8_t ROM_bank1[0x4000]; 
+        // 0x8000 to 0x9FFF
+        uint8_t vram[0x2000]; 
+        // 0xA000 t0 0xBFFF
+        uint8_t external_ram[0x2000]; // ram banking
+        // 0xC000 to 0xCFFF
+        uint8_t wram0[0x1000];
+        // 0xD000 to 0xDFFF
+        uint8_t wram1[0x1000];
+        // 0xE000 to 0xFDFF
+        // uint8_t ECHO_ram[0x1DFF]; // typically not used
+        // 0xFE00 to 0xFE9F 
+        uint8_t oam[0x100];
+        // 0xFEA0 - 0xFEFF Not Usable
+        // 0xFF00 to 0xFF7F I/O Ports
+        uint8_t io[0x7F];
+        // FF80-FFFE High RAM (HRAM)
+        uint8_t hram[0x7E];
+        uint8_t interrupt_enable;
+    } internal_memory;
+} gb_memory;
 
 void init_gb_memory(gb_memory *memory);
 void init_ram(gb_memory *memory);

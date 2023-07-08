@@ -3,24 +3,26 @@
 
 
 void init_gb_memory(gb_memory *memory){
-    init_cartridge(memory);
-    init_ram(memory);
+    memset(memory, 0, sizeof(gb_memory));
 }
 
-void init_ram(gb_memory *memory){
-    memset(memory->ram, 0, GB_RAM_SIZE_BYTES);
-}
+// void init_ram(gb_memory *memory){
+//     memset(memory->ram, 0, GB_RAM_SIZE_BYTES);
+// }
 
-void init_cartridge(gb_memory *memory){
-    memset(memory->ram, 0, ROM_MAX_SIZE_BYTES);
-}
+// void init_cartridge(gb_memory *memory){
+//     memset(memory->ram, 0, ROM_MAX_SIZE_BYTES);
+// }
 
 void set_memory(gb_memory *memory, int address, uint8_t value){
-    memory->ram[address] = value;
+    if(address > 0x0000 && address < 0x4000){
+        
+    }
 }
 
 uint8_t memory_get_one_byte(gb_memory *memory, int address){
-    return memory->ram[address];
+    // return memory->ram[address];
+    return 1;
 }
 
 uint16_t memory_get_two_bytes(gb_memory *memory, int address){
