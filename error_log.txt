@@ -1,3 +1,6 @@
 memory error: buffer overflow at address f001
 memory error: buffer overflow at address f002
 memory error: buffer overflow at address f002
+(null) error: buffer overflow at address 00
+memory error: buffer overflow at address f002
+memory error: buffer overflow at address f002

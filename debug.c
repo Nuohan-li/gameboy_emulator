@@ -8,7 +8,7 @@
 #include "debug.h"
 #include "memory.h"
 
-
+#ifdef __linux__
 #include <stdlib.h>
 #include <execinfo.h>
 
@@ -24,19 +24,26 @@ void printStackTrace() {
     
     free(symbols);
 }
+#endif
 
 void log_trace(bool write_to_file, const char* format, ...) {
     va_list args;
     va_start(args, format);
 
     vprintf(format, args);
+    printf("\n");
 
     if (write_to_file) {
         FILE* file = fopen("error_log.txt", "a");
         if (file != NULL) {
-            vfprintf(file, format, args);
+            va_list args2;
+            va_start(args2, format);
+
+            vfprintf(file, format, args2);
             fprintf(file, "\n");
             fclose(file);
+
+            va_end(args2);
         }
     }
     va_end(args);
