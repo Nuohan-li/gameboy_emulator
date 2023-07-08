@@ -8,6 +8,7 @@
 #include "debug.h"
 #include "memory.h"
 
+
 #ifdef __linux__
 #include <stdlib.h>
 #include <execinfo.h>
@@ -47,37 +48,6 @@ void log_trace(bool write_to_file, const char* format, ...) {
         }
     }
     va_end(args);
-}
-
-// void log_trace(bool write_to_file, const char *format, ...){
-//     // va_arg allows us to access args after format
-//     va_list args;
-//     // va_starts initializes the va_list
-//     va_start(args, format);
-
-//     vprintf(format, args);
-
-//     if(write_to_file){
-//         FILE* file = fopen("error_log.txt", "a");
-//         if (file != NULL) {
-//             vfprintf(file, format, args);
-//             fprintf(file, "\n");
-//             fclose(file);
-//         }
-//     }
-//     va_end(args);
-// }
-
-
-void log_error(const char *error_msg, const char *component, bool write_to_file){
-    printf("%s error: %s\n",component, error_msg);
-    if(write_to_file){
-        FILE* file = fopen("error_log.txt", "a");
-        if (file != NULL) {
-            fprintf(file, "%s error: %s\n", component, error_msg);
-            fclose(file);
-        }
-    }
 }
 
 // dump the content of the memory 
@@ -207,10 +177,33 @@ void dump_game_content(char *file_name){
 void test(){
     // memory test 
     cpu cpu;
+    // gb_memory *memory = (gb_memory*) malloc(sizeof(gb_memory));
     cpu_init(&cpu);
-    // dump_memory(&cpu.memory->ram[0xFF05], 0xFB);
+    
+    // set_memory(memory, 0x0000, 1);
+    // set_memory(cpu.memory, 0x0003, 9);
+    uint8_t *internal_mem = (uint8_t *)&cpu.memory->internal_memory;
+    dump_memory(&internal_mem[0xFF00], (0x7F + 0x7E));
+    printf("\n");
+    dump_memory(cpu.memory->internal_memory.io, 0x7F);
+    dump_memory(cpu.memory->internal_memory.hram, 0x7E);
+
+
+// 0000     00 00 00 00 00 00 00 00 00 00 00 80 BF F3 00 BF  00 3F 00 00 BF 7F FF 9F 00 BF 00 FF 00 00 BF 77  .................?.............w
+// 0032     F3 F1 00 00 00 00 00 00 00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00 00 00 00 91 00 00 00 00  ................................
+// 0064     00 00 FC FF FF 00 00 00 00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................................
+// 0096     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................................
+// 0128     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................................
+// 0160     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................................
+// 0192     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................................
+// 0224     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00 00 00 00                 ...........................
+
+
+
     // printf("at address 0xFF05 - %02X\n", memory_get_one_byte(cpu.memory, 0xFF05));
     // printf("at address 0xFF10 - %02X\n", memory_get_one_byte(cpu.memory, 0xFF10));
     // printf("at address 0xFF05 - %02X\n", memory_get_one_byte(cpu.memory, 0xFF05));
     // printf("at address 0xFF05 - %02X\n", memory_get_one_byte(cpu.memory, 0xFF05));
+
+    // free(memory);
 }

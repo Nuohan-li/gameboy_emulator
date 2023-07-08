@@ -34,7 +34,7 @@ int main(int argc, char *argv[]){
 
     printf("over\n");
     
-    log_trace(1, "%s error: buffer overflow at address %02x", "memory", 0xF002);
+    // log_trace(1, "%s error: buffer overflow at address %02x", "memory", 0xF002);
 
     // cpu cpu_ctx;
     // cpu_init(&cpu_ctx);
