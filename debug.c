@@ -26,9 +26,7 @@ void printStackTrace() {
 }
 
 void log_trace(bool write_to_file, const char* format, ...) {
-    // va_list allows us to access args after format
     va_list args;
-    // va_start initializes the va_list
     va_start(args, format);
 
     vprintf(format, args);
@@ -36,16 +34,12 @@ void log_trace(bool write_to_file, const char* format, ...) {
     if (write_to_file) {
         FILE* file = fopen("error_log.txt", "a");
         if (file != NULL) {
-            va_list file_args;
-            va_copy(file_args, args);
-            vfprintf(file, format, file_args);
+            vfprintf(file, format, args);
             fprintf(file, "\n");
             fclose(file);
-            va_end(file_args);
         }
     }
     va_end(args);
-    printStackTrace();
 }
 
 // void log_trace(bool write_to_file, const char *format, ...){
