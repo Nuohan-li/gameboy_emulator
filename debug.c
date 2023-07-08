@@ -25,24 +25,47 @@ void printStackTrace() {
     free(symbols);
 }
 
-void log_trace(bool write_to_file, const char *format, ...){
-    // va_arg allows us to access args after format
+void log_trace(bool write_to_file, const char* format, ...) {
+    // va_list allows us to access args after format
     va_list args;
-    // va_starts initializes the va_list
+    // va_start initializes the va_list
     va_start(args, format);
 
     vprintf(format, args);
 
-    if(write_to_file){
+    if (write_to_file) {
         FILE* file = fopen("error_log.txt", "a");
         if (file != NULL) {
-            vfprintf(file, format, args);
+            va_list file_args;
+            va_copy(file_args, args);
+            vfprintf(file, format, file_args);
             fprintf(file, "\n");
             fclose(file);
+            va_end(file_args);
         }
     }
     va_end(args);
+    printStackTrace();
 }
+
+// void log_trace(bool write_to_file, const char *format, ...){
+//     // va_arg allows us to access args after format
+//     va_list args;
+//     // va_starts initializes the va_list
+//     va_start(args, format);
+
+//     vprintf(format, args);
+
+//     if(write_to_file){
+//         FILE* file = fopen("error_log.txt", "a");
+//         if (file != NULL) {
+//             vfprintf(file, format, args);
+//             fprintf(file, "\n");
+//             fclose(file);
+//         }
+//     }
+//     va_end(args);
+// }
 
 
 void log_error(const char *error_msg, const char *component, bool write_to_file){
