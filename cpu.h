@@ -17,35 +17,24 @@
     pair is less frequent than the others. HL is used very frequently mainly for referring to game memory.
 
 */
-union Registers{
+typedef union Registers{
     uint16_t value;
     struct{
         uint8_t lo;  // lo defined first because my windows laptop is little endian
         uint8_t hi;
     }__attribute__((__packed__));
-};
+} Registers;
 
 typedef struct cpu{
-    // struct registers{
-    //     uint8_t A;
-    //     uint8_t B;
-    //     uint8_t C;
-    //     uint8_t D;
-    //     uint8_t E;
-    //     uint8_t F;
-    //     uint8_t H;
-    //     uint8_t L;
-    // }registers;
-
     Registers AF;
     Registers BC;
     Registers DE;
     Registers HL;
-    uint16_t PC;
+    Registers PC;
     // some instructions uses only the lower byte or upper byte of the stack pointer                
-    uint16_t SP; 
-
-    gb_memory memory;
+    Registers SP; 
+    
+    gb_memory *memory;
 } cpu;
 
 void cpu_init(cpu *cpu_ctx);

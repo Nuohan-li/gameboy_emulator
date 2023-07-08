@@ -74,61 +74,64 @@ void dump_game_content(char *file_name){
     dump_memory(game, size);
 }
 
-void debugger(cpu *cpu_ctx){
-    char *file_name = "GAMES/GAMES/CAVE.ch8";
-    FILE* f = fopen(file_name, "rb");  
-    fseek(f, 0, SEEK_END);
-    long size = ftell(f);
-    fseek(f, 0, SEEK_SET);
-    uint8_t game[size];
-    fread(game, size, 1, f);
-    init_gb_memory(&cpu_ctx->memory);
-    load_game(cpu_ctx, file_name);
-    dump_memory(cpu_ctx->memory.ram, 4096);
+// void debugger(cpu *cpu_ctx){
+//     char *file_name = "GAMES/GAMES/CAVE.ch8";
+//     FILE* f = fopen(file_name, "rb");  
+//     fseek(f, 0, SEEK_END);
+//     long size = ftell(f);
+//     fseek(f, 0, SEEK_SET);
+//     uint8_t game[size];
+//     fread(game, size, 1, f);
+//     init_gb_memory(&cpu_ctx->memory);
+//     load_game(cpu_ctx, file_name);
+//     dump_memory(cpu_ctx->memory.ram, 4096);
 
-    uint16_t opcode = 0;
-    char input[20];
-    int address = 512;
-    int size_to_dump = 0;
-    // char game_name[50];
-    printf("Debugging mode\n");
-    while(1){
-        printf(">>> ");
-        fgets(input, sizeof(input), stdin);
-        switch (tolower(input[0]))
-        {
-        // execute a game instruction
-        case 'e':
-            sscanf(input, "%*s %d", &address);
-            if(address < 512 || address > size + GAME_MEM_SPACE_BEGINNING){
-                printf("You have stepped out of memory space allocated for game instructions\n");
-                break;
-            }
-            if(address % 2 != 0){
-                printf("Every instruction starts at even address\n");
-                break;        
-            }
-            opcode = memory_get_two_bytes(&cpu_ctx->memory, address);
-            execute_opcode(cpu_ctx, opcode);
-            break;
-        // dump memory segments 
-        case 'd':
-            sscanf(input, "%*s %d %d", &address, &size_to_dump);
-            dump_memory(&cpu_ctx->memory.ram[address], size_to_dump);
-            break;
+//     uint16_t opcode = 0;
+//     char input[20];
+//     int address = 512;
+//     int size_to_dump = 0;
+//     // char game_name[50];
+//     printf("Debugging mode\n");
+//     while(1){
+//         printf(">>> ");
+//         fgets(input, sizeof(input), stdin);
+//         switch (tolower(input[0]))
+//         {
+//         // execute a game instruction
+//         case 'e':
+//             sscanf(input, "%*s %d", &address);
+//             if(address < 512 || address > size + GAME_MEM_SPACE_BEGINNING){
+//                 printf("You have stepped out of memory space allocated for game instructions\n");
+//                 break;
+//             }
+//             if(address % 2 != 0){
+//                 printf("Every instruction starts at even address\n");
+//                 break;        
+//             }
+//             opcode = memory_get_two_bytes(&cpu_ctx->memory, address);
+//             execute_opcode(cpu_ctx, opcode);
+//             break;
+//         // dump memory segments 
+//         case 'd':
+//             sscanf(input, "%*s %d %d", &address, &size_to_dump);
+//             dump_memory(&cpu_ctx->memory.ram[address], size_to_dump);
+//             break;
         
-        // dump game
-        case 'g':
-            dump_memory(&cpu_ctx->memory.ram[GAME_MEM_SPACE_BEGINNING], size);
-            break;
+//         // dump game
+//         case 'g':
+//             dump_memory(&cpu_ctx->memory.ram[GAME_MEM_SPACE_BEGINNING], size);
+//             break;
             
-        default:
-            printf("Invalid command\n");
-            break;
-        }
-    }
-}
+//         default:
+//             printf("Invalid command\n");
+//             break;
+//         }
+//     }
+// }
 
 void test(){
     // memory test 
+    cpu cpu;
+    cpu_init(&cpu);
+    printf("after init\n");
 }

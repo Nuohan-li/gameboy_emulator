@@ -25,4 +25,4 @@ SRCS = main.c memory.c cpu.c debug.c
 
 # Build the executable
 $(EXECUTABLE): $(SRCS)
-	g++ -Wall -Wextra $(SRCS) -o $(EXECUTABLE) $(INCLUDE)
+	gcc -Wall -Wextra $(SRCS) -o $(EXECUTABLE) $(INCLUDE)

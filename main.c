@@ -12,6 +12,7 @@
 
 int main(int argc, char *argv[]){
     printf("test1\n");
+    test();
     SDL_Init(SDL_INIT_EVERYTHING);
     SDL_Window *window = SDL_CreateWindow("SDL Test", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 600, SDL_WINDOW_ALLOW_HIGHDPI);
     if (window == NULL) {
@@ -31,14 +32,7 @@ int main(int argc, char *argv[]){
     SDL_DestroyWindow(window);
     SDL_Quit();
 
-    cpu cpu_ctx = {
-        .BC = {0},
-        .DE = {0},
-        .HL = {0},
-        .PC = 0,
-        .SP = 0,
-        .memory = {0} // Assuming `memory` is a struct type like `gb_memory`
-    };
+    // cpu cpu_ctx;
     // cpu_init(&cpu_ctx);
     // char* file_name = "GAMES/pokemonYellow.gb";
     // dump_game_content(file_name);

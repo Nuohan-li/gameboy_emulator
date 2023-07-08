@@ -34,7 +34,7 @@ MEMORY MAP
 */ 
 
 typedef struct gb_memory{
-    uint8_t ram[0x10000];
+    uint8_t ram[GB_RAM_SIZE_BYTES];
     uint8_t cartridge_memory[ROM_MAX_SIZE_BYTES];
 }gb_memory;
 
