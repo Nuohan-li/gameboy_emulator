@@ -8,3 +8,4 @@
 #define FLAG_N 6   // subtract flag
 #define FLAG_H 5   // half carry flag
 #define FLAG_C 4   // carry flag
+

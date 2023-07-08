@@ -133,5 +133,5 @@ void test(){
     // memory test 
     cpu cpu;
     cpu_init(&cpu);
-    printf("after init\n");
+    dump_memory(&cpu.memory->ram[0xFF05], 0xFB);
 }

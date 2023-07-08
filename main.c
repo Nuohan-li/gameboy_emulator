@@ -32,6 +32,8 @@ int main(int argc, char *argv[]){
     SDL_DestroyWindow(window);
     SDL_Quit();
 
+    printf("over\n");
+
     // cpu cpu_ctx;
     // cpu_init(&cpu_ctx);
     // char* file_name = "GAMES/pokemonYellow.gb";
