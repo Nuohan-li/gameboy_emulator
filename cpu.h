@@ -1,4 +1,3 @@
-// https://github.com/mattmikolay/chip-8/wiki/Mastering-CHIP%E2%80%908
 
 #pragma once
 
@@ -26,27 +25,24 @@ union Registers{
     }__attribute__((__packed__));
 };
 
-class cpu{
-    private:
-        Registers AF;
-        Registers BC;
-        Registers DE;
-        Registers HL;
-        Registers PC;
-        // some instructions uses only the lower byte or upper byte of the stack pointer                
-        Registers SP; 
-        gb_memory memory;
-    public:
-        void cpu_init();
-        void load_game(const char *game_file);
-        void execute_opcode(uint16_t opcode);
+typedef struct cpu{
+    struct registers{
+        uint8_t A;
+        uint8_t B;
+        uint8_t C;
+        uint8_t D;
+        uint8_t E;
+        uint8_t F;
+        uint8_t H;
+        uint8_t L;
+    }registers __attribute__((__packed__));
+    uint16_t PC;
+    // some instructions uses only the lower byte or upper byte of the stack pointer                
+    uint16_t SP; 
 
-};
+    gb_memory memory;
+} cpu;
 
-// // initialize the CPU -> set everything to 0
-// void cpu_init(cpu *cpu);
-
-// // load th game into the memory 
-// void load_game(cpu *cpu, uint8_t *game, size_t gamesize);
-
-// void execute_opcode(cpu *cpu, uint16_t opcode);
+void cpu_init(cpu *cpu_ctx);
+uint64_t load_game(cpu *cpu_ctx, const char *game_file);
+void execute_opcode(cpu *cpu_ctx, uint16_t opcode);

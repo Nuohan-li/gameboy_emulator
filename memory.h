@@ -33,17 +33,15 @@ MEMORY MAP
 +-----------+
 */ 
 
-class gb_memory{
-    private:
-        uint8_t ram[GB_RAM_SIZE_BYTES];
-        uint8_t cartridge_memory[ROM_MAX_SIZE_BYTES];
-    public:
-        void init_gb_memory();
-        void init_ram();
-        void init_cartridge();
-        void set_memory(int address, uint8_t value);
-        uint8_t memory_get_one_byte(int address);
-        uint16_t memory_get_two_bytes(int address);
-        void load_game(uint8_t *game, uint64_t size);      
-};
+typedef struct gb_memory{
+    uint8_t ram[0x10000];
+    uint8_t cartridge_memory[ROM_MAX_SIZE_BYTES];
+}gb_memory;
 
+void init_gb_memory(gb_memory *memory);
+void init_ram(gb_memory *memory);
+void init_cartridge(gb_memory *memory);
+void set_memory(gb_memory *memory, int address, uint8_t value);
+uint8_t memory_get_one_byte(gb_memory *memory, int address);
+uint16_t memory_get_two_bytes(gb_memory *memory, int address);
+void load_cart_game(gb_memory *memory, uint8_t *game, uint64_t size); 
