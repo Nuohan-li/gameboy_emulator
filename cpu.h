@@ -26,16 +26,21 @@ union Registers{
 };
 
 typedef struct cpu{
-    struct registers{
-        uint8_t A;
-        uint8_t B;
-        uint8_t C;
-        uint8_t D;
-        uint8_t E;
-        uint8_t F;
-        uint8_t H;
-        uint8_t L;
-    }registers __attribute__((__packed__));
+    // struct registers{
+    //     uint8_t A;
+    //     uint8_t B;
+    //     uint8_t C;
+    //     uint8_t D;
+    //     uint8_t E;
+    //     uint8_t F;
+    //     uint8_t H;
+    //     uint8_t L;
+    // }registers;
+
+    Registers AF;
+    Registers BC;
+    Registers DE;
+    Registers HL;
     uint16_t PC;
     // some instructions uses only the lower byte or upper byte of the stack pointer                
     uint16_t SP; 

@@ -6,15 +6,15 @@
 // initialize the CPU -> set everything to 0, then set the specific 
 void cpu_init(cpu *cpu_ctx){
     printf("test\n");
-    cpu_ctx->registers.A = 0x01;
-    cpu_ctx->registers.F = 0xB0;
-    cpu_ctx->registers.B = 0x00;
-    cpu_ctx->registers.C = 0x13;
-    cpu_ctx->registers.D = 0x00;
-    cpu_ctx->registers.E = 0xD8;
-    cpu_ctx->registers.H = 0x01;
-    cpu_ctx->registers.L = 0x4D;
-    cpu_ctx->PC = 0x100 ;
+    // cpu_ctx->registers.A = 0x01;
+    // cpu_ctx->registers.F = 0xB0;
+    // cpu_ctx->registers.B = 0x00;
+    // cpu_ctx->registers.C = 0x13;
+    // cpu_ctx->registers.D = 0x00;
+    // cpu_ctx->registers.E = 0xD8;
+    // cpu_ctx->registers.H = 0x01;
+    // cpu_ctx->registers.L = 0x4D;
+    // cpu_ctx->PC = 0x100 ;
     // cpu_ctx->AF.value = 0x01B0;
     // cpu_ctx->BC.value = 0x0013;
     // cpu_ctx->DE.value = 0x00D8;
