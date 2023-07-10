@@ -1,0 +1,41 @@
+Memory
+internal memory only has room for 0x8000 (0x0000 - 0x7FFF) of the game memory. 
+However most games are bigger in size than 0x8000 which is why memory banking is needed. 
+- The first 0x4000 bytes is where the first 0x4000 (0000-0x3FFF) (Rom bank 0) bytes of the game memory is placed. 
+- The second 0x4000 (0x4000 - 0x7FFF) is also for the game memory however this area is the rom bank area so depending 
+  on the current state of the game this memory area will contain different game memory banks. 
+- Memory area 0xA000-0xBFFF is also for banking but this time it's ram banking. 
+- The ECHO memory region (0xE000-0xFDFF) is quite different because any data written here is also written in the equivelent 
+  ram memory region 0xC000-0xDDFF. Hence why it is called echo. 
+         whenever I emulated this it never worked correctly so I took it out and have never had any problems. 
+- The HRAM is where the stack stores its data. The stack pointer starts at 0xFFFE and works its way down in memory whenever 
+  something is pushed onto the stack
+
+
+Things to watch out for:
+ 1. gb_memory may only be declared static or use malloc, otherwise it causes a segmentation fault
+    POTENTIAL REASON: size is too big (2155006 Bytes), maybe there is no enough continous chunk on stack to acommodate it
+
+ROMs and RAM Bank
+0x00: ROM ONLY
+0x01: MBC1
+0x02: MBC1+RAM
+0x03: MBC1+RAM+BATTERY
+0x05: MBC2
+0x06: MBC2+BATTERY
+0x08: ROM+RAM
+0x09: ROM+RAM+BATTERY
+0x0B: MMM01
+0x0C: MMM01+RAM
+0x0D: MMM01+RAM+BATTERY
+0x0F: MBC3+TIMER+BATTERY
+0x10: MBC3+TIMER+RAM+BATTERY
+0x11: MBC3
+0x12: MBC3+RAM
+0x13: MBC3+RAM+BATTERY
+0x19: MBC5
+0x1A: MBC5+RAM
+0x1B: MBC5+RAM+BATTERY
+0x1C: MBC5+RUMBLE
+0x1D: MBC5+RUMBLE+RAM
+0x1E: MBC5+RUMBLE+RAM+BATTERY
