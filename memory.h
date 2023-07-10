@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 #include <stdint.h>
+#include <stdbool.h>
 #include "common.h"
 
 /*
@@ -34,38 +35,45 @@ MEMORY MAP
 +-----------+
 */ 
 
-// struct internal_memory{
-//     // 0x0000 to 0x3FFF
-//     uint8_t ROM_bank0[0x4000]; 
-//     // 0x4000 to 0x7FFF
-//     uint8_t ROM_bank1[0x4000]; 
-//     // 0x8000 to 0x9FFF
-//     uint8_t vram[0x2000]; 
-//     // 0xA000 t0 0xBFFF
-//     uint8_t external_ram[0x2000]; // ram banking
-//     // 0xC000 to 0xCFFF
-//     uint8_t wram0[0x1000];
-//     // 0xD000 to 0xDFFF
-//     uint8_t wram1[0x1000];
-//     // 0xE000 to 0xFDFF
-//     // uint8_t ECHO_ram[0x1DFF]; // typically not used
-//     // 0xFE00 to 0xFE9F 
-//     uint8_t oam[0x100];
-//     // 0xFEA0 - 0xFEFF Not Usable
-//     // 0xFF00 to 0xFF7F I/O Ports
-//     uint8_t io[0x7F];
-//     // FF80-FFFE High RAM (HRAM)
-//     uint8_t hram[0x7E];
-//     // 0xFFFF
-//     uint8_t interrupt_enable;
-// } __attribute__((packed));
+// reserved memory location shown in section 2.5.4 of gameboy manual
+typedef enum rom_banking_modes{
+    ROM_ONLY = 0x00,
+    MBC1 = 0x01,
+    MBC1_RAM = 0x02,
+    MBC1_RAM_BATTERY = 0x03,
+    MBC2 = 0x05,
+    MBC2_BATTERY = 0x06,
+    ROM_RAM = 0x08,
+    ROM_RAM_BATTERY = 0x09,
+    MMM01 = 0x0B,
+    MMM01_RAM = 0x0C,
+    MMM01_RAM_BATTERY = 0x0D,
+    MBC3_TIMER_BATTERY = 0x0F,
+    MBC3_TIMER_RAM_BATTERY = 0x10,
+    MBC3 = 0x11,
+    MBC3_RAM = 0x12,
+    MBC3_RAM_BATTERY = 0x13,
+    MBC5 = 0x19,
+    MBC5_RAM = 0x1A,
+    MBC5_RAM_BATTERY = 0x1B,
+    MBC5_RUMBLE = 0x1C,
+    MBC5_RUMBLE_RAM = 0x1D, 
+    MBC5_RUMBLE_RAM_BATTERY = 0x1E,
+    POCKET_CAMERA = 0x1F,
+    BANDAI_TAMA5 = 0xFD,
+    HUDSON_HUC_3 = 0xFE,
+    HUDSON_HUC_1 = 0xFF
+} rom_banking_modes;
 
 typedef struct gb_memory{
     uint8_t cartridge_memory[ROM_MAX_SIZE_BYTES];
     // struct internal_memory internal_memory;
-    uint8_t internal_memory[0x10000];
+    uint8_t internal_memory[GB_RAM_SIZE_BYTES];
+    rom_banking_modes rom_banking_mode;
     
 } gb_memory;
+
+
 
 void init_gb_memory(gb_memory *memory);
 void init_ram(gb_memory *memory);
@@ -74,3 +82,4 @@ int set_memory(gb_memory *memory, int address, uint8_t value);
 uint8_t memory_get_one_byte(gb_memory *memory, int address);
 uint16_t memory_get_two_bytes(gb_memory *memory, int address);
 void load_cart_game(gb_memory *memory, uint8_t *game, uint64_t size); 
+void set_rom_banking_mode(gb_memory *memory);

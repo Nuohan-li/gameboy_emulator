@@ -92,3 +92,8 @@ uint16_t memory_get_two_bytes(gb_memory *memory, int address){
 void load_cart_game(gb_memory *memory, uint8_t *game, uint64_t size){
     memcpy(memory->cartridge_memory, game, size);
 }
+
+void set_rom_banking_mode(gb_memory *memory){
+    memory->rom_banking_mode = memory->cartridge_memory[0x147];
+    
+}

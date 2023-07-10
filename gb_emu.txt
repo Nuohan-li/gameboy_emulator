@@ -1,4 +1,5 @@
-Memory
+Memory see gb_manual section 2.5.4 for reserved memory location
+
 internal memory only has room for 0x8000 (0x0000 - 0x7FFF) of the game memory. 
 However most games are bigger in size than 0x8000 which is why memory banking is needed. 
 - The first 0x4000 bytes is where the first 0x4000 (0000-0x3FFF) (Rom bank 0) bytes of the game memory is placed. 

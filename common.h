@@ -1,8 +1,10 @@
 #include <stdint.h>
 
+// memory defines
 #define GB_RAM_SIZE_BYTES 0x10000
 #define GAME_MEM_SPACE_BEGINNING 512
 #define ROM_MAX_SIZE_BYTES 0x200000 
+#define NUM_BANKING_MODES 26
 
 // cpu defines 
 // for flag see GBManual P.62

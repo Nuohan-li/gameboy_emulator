@@ -46,7 +46,6 @@ void cpu_init(cpu *cpu_ctx, gb_memory *memory){
     set_memory(cpu_ctx->memory, 0xFFFF, 0x00);
 }
 
-// memory space starts at 512 or 0x200 in the memory array 
 uint64_t load_game(cpu *cpu_ctx, const char *game_file){
     FILE *f = fopen(game_file, "rb");
     fseek(f, 0, SEEK_END);
