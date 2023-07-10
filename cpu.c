@@ -4,10 +4,9 @@
 #include "memory.h"
 
 // initialize the CPU -> set everything to 0, then set the specific 
-void cpu_init(cpu *cpu_ctx){
-    static gb_memory mem;
-    cpu_ctx->memory = &mem;
-    
+void cpu_init(cpu *cpu_ctx, gb_memory *memory){
+    cpu_ctx->memory = memory;
+
     cpu_ctx->PC.value = 0x100 ;
     cpu_ctx->AF.value = 0x01B0;
     cpu_ctx->BC.value = 0x0013;

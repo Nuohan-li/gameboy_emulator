@@ -37,6 +37,6 @@ typedef struct cpu{
     gb_memory *memory;
 } cpu;
 
-void cpu_init(cpu *cpu_ctx);
+void cpu_init(cpu *cpu_ctx, gb_memory *memory);
 uint64_t load_game(cpu *cpu_ctx, const char *game_file);
 void execute_opcode(cpu *cpu_ctx, uint16_t opcode);

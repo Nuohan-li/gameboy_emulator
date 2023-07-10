@@ -177,18 +177,23 @@ void dump_game_content(char *file_name){
 
 void test(){
     // memory test 
-    cpu cpu;
+    static cpu cpu;
+    static gb_memory memory;
     // gb_memory *memory = (gb_memory*) malloc(sizeof(gb_memory));
-    cpu_init(&cpu);
+    cpu_init(&cpu, &memory);
     
-    // set_memory(memory, 0x0000, 1);
-    // set_memory(cpu.memory, 0x0003, 9);
-    uint8_t *internal_mem = (uint8_t *)&cpu.memory->internal_memory;
-    dump_memory(&internal_mem[0xFF00], (0x7F + 0x7E));
+    // uint8_t *internal_mem = (uint8_t *)&cpu.memory->internal_memory;
+
+    // internal memory is too big and may cause stackoverflow
+    uint8_t *internal_mem = malloc(sizeof(cpu.memory->internal_memory));
+    if (internal_mem == NULL) {
+        printf("Failed to allocate memory for internal_mem\n");
+    }
+    memcpy(internal_mem, &cpu.memory->internal_memory, sizeof(cpu.memory->internal_memory));
+    dump_memory(&internal_mem[0xFF00], 0x7F + 0x7E);
     printf("\n");
-    dump_memory(cpu.memory->internal_memory.io, 0x7F);
-    dump_memory(cpu.memory->internal_memory.hram, 0x7E);
-    const char *file_name = "GAME/pokemonYellow.gb";
+    
+    const char *file_name = "GAME/Tetris.gb";
     load_game(&cpu, file_name);
     printf("\n"); 
     dump_memory(&cpu.memory->cartridge_memory[0x147], 2);
