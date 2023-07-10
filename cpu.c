@@ -54,8 +54,8 @@ uint64_t load_game(cpu *cpu_ctx, const char *game_file){
     uint64_t size = ftell(f);
     fseek(f, 0, SEEK_SET);
     uint8_t game[size];
-    fread(game, size, 1, f);
-    load_cart_game(cpu_ctx->memory, game, size);
+    fread(cpu_ctx->memory->cartridge_memory, size, 1, f);
+    // load_cart_game(cpu_ctx->memory, game, size);
     return size;
 }
 

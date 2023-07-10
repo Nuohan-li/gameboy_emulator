@@ -7,6 +7,7 @@
 #include "common.h"
 #include "debug.h"
 #include "memory.h"
+#include "cpu.h"
 
 
 #ifdef __linux__
@@ -187,6 +188,12 @@ void test(){
     printf("\n");
     dump_memory(cpu.memory->internal_memory.io, 0x7F);
     dump_memory(cpu.memory->internal_memory.hram, 0x7E);
+    const char *file_name = "GAME/pokemonYellow.gb";
+    load_game(&cpu, file_name);
+    printf("\n"); 
+    dump_memory(&cpu.memory->cartridge_memory[0x147], 2);
+
+    
 
 
 // 0000     00 00 00 00 00 00 00 00 00 00 00 80 BF F3 00 BF  00 3F 00 00 BF 7F FF 9F 00 BF 00 FF 00 00 BF 77  .................?.............w
