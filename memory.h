@@ -15,7 +15,7 @@ MEMORY MAP
 +-----------+
 | 8000-9FFF | 8KB Video RAM (VRAM) (switchable bank 0-1 in CGB Mode)
 +-----------+
-| A000-BFFF | 8KB External RAM (in cartridge, switchable RAM bank, if any)
+| A000-BFFF | 8KB External RAM (in cartridge, switchable RAM bank, if any) -> not used by MCB1, used by MCB2
 +-----------+
 | C000-CFFF | 4KB Work RAM Bank 0 (WRAM)
 +-----------+
@@ -72,6 +72,7 @@ typedef struct gb_memory{
     uint8_t current_rom_bank;  // rom bank 0 to rom bank 3
     uint8_t current_ram_bank;
     bool enable_ram;
+    bool use_rom_banking;
     
 } gb_memory;
 
@@ -80,9 +81,9 @@ typedef struct gb_memory{
 void init_gb_memory(gb_memory *memory);
 void init_ram(gb_memory *memory);
 void init_cartridge(gb_memory *memory);
-int set_memory(gb_memory *memory, int address, uint8_t value);
-uint8_t memory_get_one_byte(gb_memory *memory, int address);
-uint16_t memory_get_two_bytes(gb_memory *memory, int address);
+int write_byte(gb_memory *memory, int address, uint8_t value);
+uint8_t read_one_byte(gb_memory *memory, int address);
+uint16_t read_two_bytes(gb_memory *memory, int address);
 void load_cart_game(gb_memory *memory, uint8_t *game, uint64_t size); 
 void set_rom_banking_mode(gb_memory *memory);
 rom_banking_modes get_rom_banking_mode(gb_memory *memory);

@@ -154,7 +154,7 @@ void dump_game_content(char *file_name){
 //                 printf("Every instruction starts at even address\n");
 //                 break;        
 //             }
-//             opcode = memory_get_two_bytes(&cpu_ctx->memory, address);
+//             opcode = read_two_bytes(&cpu_ctx->memory, address);
 //             execute_opcode(cpu_ctx, opcode);
 //             break;
 //         // dump memory segments 
@@ -209,10 +209,10 @@ void test(){
 
 
 
-    // printf("at address 0xFF05 - %02X\n", memory_get_one_byte(cpu.memory, 0xFF05));
-    // printf("at address 0xFF10 - %02X\n", memory_get_one_byte(cpu.memory, 0xFF10));
-    // printf("at address 0xFF05 - %02X\n", memory_get_one_byte(cpu.memory, 0xFF05));
-    // printf("at address 0xFF05 - %02X\n", memory_get_one_byte(cpu.memory, 0xFF05));
+    // printf("at address 0xFF05 - %02X\n", read_one_byte(cpu.memory, 0xFF05));
+    // printf("at address 0xFF10 - %02X\n", read_one_byte(cpu.memory, 0xFF10));
+    // printf("at address 0xFF05 - %02X\n", read_one_byte(cpu.memory, 0xFF05));
+    // printf("at address 0xFF05 - %02X\n", read_one_byte(cpu.memory, 0xFF05));
 
     // free(memory);
 }
