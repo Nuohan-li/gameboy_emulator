@@ -6,6 +6,11 @@
 #define ROM_MAX_SIZE_BYTES 0x200000 
 #define NUM_BANKING_MODES 26
 
+// timer 
+#define TIMER_ADDR 0xFF05
+#define TIMER_RESET_VALUE_ADDR 0xFF06
+#define TIMER_CONTROLLER_ADDR 0xFF07 
+
 // cpu defines 
 // for flag see GBManual P.62
 #define FLAG_Z 7   // zero flag

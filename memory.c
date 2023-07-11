@@ -2,7 +2,6 @@
 #include "debug.h"
 #include <string.h>
 
-
 void init_gb_memory(gb_memory *memory){
     memset(memory, 0, sizeof(gb_memory));
     memory->rom_banking_mode = ROM_ONLY;

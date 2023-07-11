@@ -76,8 +76,6 @@ typedef struct gb_memory{
     
 } gb_memory;
 
-
-
 void init_gb_memory(gb_memory *memory);
 void init_ram(gb_memory *memory);
 void init_cartridge(gb_memory *memory);
