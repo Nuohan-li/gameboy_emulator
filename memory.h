@@ -9,13 +9,13 @@
 https://gbdev.io/pandocs/Memory_Map.html
 MEMORY MAP
 +-----------+
-| 0000-3FFF | 16KB ROM Bank 00 (in cartridge, fixed at bank 00)
+| 0000-3FFF | 16KB ROM Bank 00 (in cartridge, fixed at rom bank 00)
 +-----------+
-| 4000-7FFF | 16KB ROM Bank 01..NN (in cartridge, switchable bank number)
+| 4000-7FFF | 16KB ROM Bank 01..NN (in cartridge, switchable rom bank number)
 +-----------+
 | 8000-9FFF | 8KB Video RAM (VRAM) (switchable bank 0-1 in CGB Mode)
 +-----------+
-| A000-BFFF | 8KB External RAM (in cartridge, switchable bank, if any)
+| A000-BFFF | 8KB External RAM (in cartridge, switchable RAM bank, if any)
 +-----------+
 | C000-CFFF | 4KB Work RAM Bank 0 (WRAM)
 +-----------+
@@ -67,9 +67,11 @@ typedef enum rom_banking_modes{
 
 typedef struct gb_memory{
     uint8_t cartridge_memory[ROM_MAX_SIZE_BYTES];
-    // struct internal_memory internal_memory;
     uint8_t internal_memory[GB_RAM_SIZE_BYTES];
     rom_banking_modes rom_banking_mode;
+    uint8_t current_rom_bank;  // rom bank 0 to rom bank 3
+    uint8_t current_ram_bank;
+    bool enable_ram;
     
 } gb_memory;
 
@@ -83,3 +85,4 @@ uint8_t memory_get_one_byte(gb_memory *memory, int address);
 uint16_t memory_get_two_bytes(gb_memory *memory, int address);
 void load_cart_game(gb_memory *memory, uint8_t *game, uint64_t size); 
 void set_rom_banking_mode(gb_memory *memory);
+rom_banking_modes get_rom_banking_mode(gb_memory *memory);

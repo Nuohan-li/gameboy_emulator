@@ -36,7 +36,7 @@ void log_trace(bool write_to_file, const char* format, ...) {
     printf("\n");
 
     if (write_to_file) {
-        FILE* file = fopen("error_log.txt", "a");
+        FILE* file = fopen("trace.log", "a");
         if (file != NULL) {
             va_list args2;
             va_start(args2, format);
@@ -187,7 +187,7 @@ void test(){
     dump_memory(&cpu.memory->internal_memory[0xFF00], 0x7F + 0x7E);
     printf("\n");
     
-    const char *file_name = "GAME/Tetris.gb";
+    const char *file_name = "GAME/pokemonYellow.gb";
     load_game(&cpu, file_name);
     printf("\n"); 
     dump_memory(&cpu.memory->cartridge_memory[0x147], 2);

@@ -17,7 +17,7 @@ Things to watch out for:
  1. gb_memory may only be declared static or use malloc, otherwise it causes a segmentation fault
     POTENTIAL REASON: size is too big (2155006 Bytes), maybe there is no enough continous chunk on stack to acommodate it
 
-ROMs and RAM Bank
+ROMs and RAM Bank (cartridge memory at 0x0147)
 0x00: ROM ONLY
 0x01: MBC1
 0x02: MBC1+RAM
@@ -40,3 +40,15 @@ ROMs and RAM Bank
 0x1C: MBC5+RUMBLE
 0x1D: MBC5+RUMBLE+RAM
 0x1E: MBC5+RUMBLE+RAM+BATTERY
+
+Cartridge memory address 0x148 tells how much RAM banks the game has. The maximum is 4. 
+The size of 1 RAM bank is 0x2000 bytes so if we have an array of size 0x8000 this is enough 
+space for all the RAM banks. Like ROM banking we also need a variable to point at which RAM 
+bank the game is using between values of 0-3. This gives us the following declarations.
+
+Writing to memory:
+In order to write to RAM banks the game must specifically request that ram bank writing is enabled. 
+It does this by attempting to write to internal ROM address between 0 and 0x2000. For MBC1 if the lower
+nibble of the data the game is writing to memory is 0xA then ram bank writing is enabled else if the lower
+nibble is 0 then ram bank writing is disabled. MBC2 is exactly the same except there is an additional clause 
+that bit 4 of the address byte must be 0. This gives the following function:
