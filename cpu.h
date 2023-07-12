@@ -64,6 +64,7 @@ typedef struct cpu{
     // modulator in memory address 0xFF06.
     // timer_counter will be set to determine whether timer is about to overflow or not
     int timer_counter;
+    bool is_timer_enabled;
 } cpu;
 
 void cpu_init(cpu *cpu_ctx, gb_memory *memory);

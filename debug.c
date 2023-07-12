@@ -189,7 +189,9 @@ void test(){
     if(cpu.memory->rom_banking_mode == ROM_ONLY){
         printf("rom only for tetris\n");
     }
-    printf("initial timer counter = %d\n", cpu.timer_counter);
+    printf("initial timer counter = %d\n", cpu.timer_counter); // should be 1024
+    bool timer_enabled = is_timer_enabled(&cpu); 
+    printf("initial timer enabled: %s\n", timer_enabled? "true" : "false"); // should be false
 
     
 
