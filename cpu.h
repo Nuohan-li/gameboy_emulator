@@ -8,6 +8,29 @@
 // #include "display.h"
 // #include "input.h"
 
+// cpu defines 
+// for flag see GBManual P.62
+#define CPU_CLOCK_SPEED_HZ 4194304
+#define FLAG_Z 7   // zero flag
+#define FLAG_N 6   // subtract flag
+#define FLAG_H 5   // half carry flag
+#define FLAG_C 4   // carry flag
+
+// Timer controller controls the timer (lol)
+// bit 1 and 2 (LSB) of the timer controller tells us the frequency at which the timer
+// should increments
+// 00: 4096 Hz   ----> default, in cpu_inint
+// 01: 262144 Hz
+// 10: 65536 Hz
+// 11: 16384 Hz
+// bit 3 tells us whether the timer is enabled or not
+#define TIMER_ADDR 0xFF05
+#define TIMER_RESET_VALUE_ADDR 0xFF06
+#define TIMER_CONTROLLER_ADDR 0xFF07 
+#define FREQUENCY_4096_HZ 4096
+#define FREQUENCY_262144_HZ 262144
+#define FREQUENCY_65536_HZ 65536
+#define FREQUENCY_16384_HZ 16384
 
 /*
     The gameboy has 8 registers named A,B,C,D,E,F,H,L each are 8-Bits in size. 
@@ -30,13 +53,24 @@ typedef struct cpu{
     Registers BC;
     Registers DE;
     Registers HL;
-    Registers PC;
-    // some instructions uses only the lower byte or upper byte of the stack pointer                
-    Registers SP; 
+    Registers PC;           
+    Registers SP; // some instructions uses only the lower byte or upper byte of the stack pointer     
     
+    // memory
     gb_memory *memory;
+
+    // Whenever the timer overflows (memory elements are all unsigned bytes so overflowing means 
+    // going greater than 255) it requests a timer interupt and then resets itself to the value of the timer 
+    // modulator in memory address 0xFF06.
+    // timer_counter will be set to determine whether timer is about to overflow or not
+    int timer_counter;
 } cpu;
 
 void cpu_init(cpu *cpu_ctx, gb_memory *memory);
 uint64_t load_game(cpu *cpu_ctx, const char *game_file);
 void execute_opcode(cpu *cpu_ctx, uint16_t opcode);
+
+// timer function
+bool is_timer_enabled(cpu *cpu_ctx);
+uint8_t get_timer_frequency(cpu *cpu_ctx);
+void set_timer_counter(cpu *cpu_ctx);

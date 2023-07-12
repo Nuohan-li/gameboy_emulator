@@ -176,17 +176,12 @@ void dump_game_content(char *file_name){
 // }
 
 void test(){
-    // memory test 
+    // CPU init test 
     static cpu cpu;
     static gb_memory memory;
-    // gb_memory *memory = (gb_memory*) malloc(sizeof(gb_memory));
-    cpu_init(&cpu, &memory);
-    
-    // uint8_t *internal_mem = (uint8_t *)&cpu.memory->internal_memory;
-    
+    cpu_init(&cpu, &memory);    
     dump_memory(&cpu.memory->internal_memory[0xFF00], 0x7F + 0x7E);
     printf("\n");
-    
     const char *file_name = "GAME/pokemonYellow.gb";
     load_game(&cpu, file_name);
     printf("\n"); 
@@ -194,6 +189,7 @@ void test(){
     if(cpu.memory->rom_banking_mode == ROM_ONLY){
         printf("rom only for tetris\n");
     }
+    printf("initial timer counter = %d\n", cpu.timer_counter);
 
     
 

@@ -11,97 +11,6 @@ void init_gb_memory(gb_memory *memory){
     memory->use_rom_banking = true;
 }
 
-int write_byte(gb_memory *memory, int address, uint8_t data){
-    if(address < 0 || address > 0xFFFF){
-        log_trace(1, "Memory error, function set_memory: invalide memory address - address %02X", address);
-        return 1;
-    }
-    if(address >= 0x0000 && address < 0x8000){
-        banking_handler(memory, address, data);
-    } 
-
-    else if(address >= 0x8000 && address < 0xA000){
-        memory->internal_memory[address] = data;
-    } 
-
-    else if(address >= 0xA000 && address < 0xC000){
-        if(memory->enable_ram){
-            memory->internal_memory[address] = data;
-        }
-    }
-
-    else if(address >= 0xC000 && address < 0xE000){
-        memory->internal_memory[address] = data;
-    }
-    
-    else if(address >= 0xE000 && address < 0xFE00){
-        log_trace(1, "Memory error, function set_memory: attempting to write at address 0xE000 to 0xFDFF (ECHO) - address %02X", address);
-        return 1;
-    }
-
-    else if(address >= 0xFE00 && address < 0xFEA0){
-        memory->internal_memory[address] = data;
-    }
-
-    else if(address >= 0xFEA0 && address < 0xFF00){
-        log_trace(1, "Memory error, function set_memory: attempting to write at address 0xFEA0 - 0xFEFF (unused) - address %02X", address);
-        return 1;
-    }
-
-    else if(address >= 0xFF00 && address < 0xFFFF){
-        memory->internal_memory[address] = data;
-    }
-
-    else if (address == 0xFFFF){
-        if(data != 0x00 && data != 0x01){
-            log_trace(1, "Memory error, function set_memory: interrupt enable can be either 1 or 0 - data %02X", data);
-            return 1;
-        }
-        memory->internal_memory[0xFFFF]= data;
-    }
-    
-    return 0;
-}
-
-uint8_t read_one_byte(gb_memory *memory, int address){
-    if(address < 0 || address > 0xFFFF){
-        log_trace(1, "Memory error, function read_one_byte: invalide memory address - address %02X", address);
-        return -1;
-    }
-    if(address >= 0x0000 && address < 0xE000){
-        return memory->internal_memory[address];
-    } 
-    
-    else if(address >= 0xE000 && address < 0xFE00){
-        log_trace(1, "Memory error, function read_one_byte: attempting to read at address 0xE000 to 0xFDFF (ECHO) - address %02X", address);
-        return -1;
-    }
-    else if(address >= 0xFE00 && address < 0xFEA0){
-        return memory->internal_memory[address];
-    }
-    else if(address >= 0xFEA0 && address < 0xFF00){
-        log_trace(1, "Memory error, function set_memory: attempting to read at address 0xFEA0 - 0xFEFF (unused) - address %02X", address);
-        return -1;
-    }
-    else if(address >= 0xFF00 && address <= 0xFFFF){
-        return memory->internal_memory[address];
-    }
-    return -1;    
-}
-
-uint16_t read_two_bytes(gb_memory *memory, int address){
-    uint8_t byte1 = read_one_byte(memory, address);
-    uint8_t byte2 = read_one_byte(memory, address + 1);
-    return ( (byte1 << 8) | byte2 );
-}
-
-void load_cart_game(gb_memory *memory, uint8_t *game, uint64_t size){
-    memcpy(memory->cartridge_memory, game, size);
-}
-
-void set_rom_banking_mode(gb_memory *memory){
-    memory->rom_banking_mode = memory->cartridge_memory[0x147];
-}
 
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -109,6 +18,10 @@ void set_rom_banking_mode(gb_memory *memory){
 //  ROM and RAM banking handler       
 // 
 ///////////////////////////////////////////////////////////////////////////////////////
+
+void set_rom_banking_mode(gb_memory *memory){
+    memory->rom_banking_mode = memory->cartridge_memory[0x147];
+}
 
 //      In order to write to RAM banks the game must specifically request that ram bank writing is enabled. 
 //      It does this by attempting to write to internal ROM address between 0 and 0x2000. For MBC1 if the lower
@@ -227,4 +140,98 @@ void banking_handler(gb_memory *memory, uint16_t address, uint8_t data){
             change_bank_mode(memory, data) ;
         }
     }
+}
+
+/////////////////////////////////////////////////////
+//
+// Memory IO
+//
+////////////////////////////////////////////////////
+
+int write_byte(gb_memory *memory, int address, uint8_t data){
+    if(address < 0 || address > 0xFFFF){
+        log_trace(1, "Memory error, function set_memory: invalide memory address - address %02X", address);
+        return 1;
+    }
+    if(address >= 0x0000 && address < 0x8000){
+        banking_handler(memory, address, data);
+    } 
+
+    else if(address >= 0x8000 && address < 0xA000){
+        memory->internal_memory[address] = data;
+    } 
+
+    else if(address >= 0xA000 && address < 0xC000){
+        if(memory->enable_ram){
+            memory->internal_memory[address] = data;
+        }
+    }
+
+    else if(address >= 0xC000 && address < 0xE000){
+        memory->internal_memory[address] = data;
+    }
+    
+    else if(address >= 0xE000 && address < 0xFE00){
+        log_trace(1, "Memory error, function set_memory: attempting to write at address 0xE000 to 0xFDFF (ECHO) - address %02X", address);
+        return 1;
+    }
+
+    else if(address >= 0xFE00 && address < 0xFEA0){
+        memory->internal_memory[address] = data;
+    }
+
+    else if(address >= 0xFEA0 && address < 0xFF00){
+        log_trace(1, "Memory error, function set_memory: attempting to write at address 0xFEA0 - 0xFEFF (unused) - address %02X", address);
+        return 1;
+    }
+
+    else if(address >= 0xFF00 && address < 0xFFFF){
+        memory->internal_memory[address] = data;
+    }
+
+    else if (address == 0xFFFF){
+        if(data != 0x00 && data != 0x01){
+            log_trace(1, "Memory error, function set_memory: interrupt enable can be either 1 or 0 - data %02X", data);
+            return 1;
+        }
+        memory->internal_memory[0xFFFF]= data;
+    }
+    
+    return 0;
+}
+
+uint8_t read_one_byte(gb_memory *memory, int address){
+    if(address < 0 || address > 0xFFFF){
+        log_trace(1, "Memory error, function read_one_byte: invalide memory address - address %02X", address);
+        return -1;
+    }
+    if(address >= 0x0000 && address < 0xE000){
+        return memory->internal_memory[address];
+    } 
+    
+    else if(address >= 0xE000 && address < 0xFE00){
+        log_trace(1, "Memory error, function read_one_byte: attempting to read at address 0xE000 to 0xFDFF (ECHO) - address %02X", address);
+        return -1;
+    }
+    else if(address >= 0xFE00 && address < 0xFEA0){
+        return memory->internal_memory[address];
+    }
+    else if(address >= 0xFEA0 && address < 0xFF00){
+        log_trace(1, "Memory error, function set_memory: attempting to read at address 0xFEA0 - 0xFEFF (unused) - address %02X", address);
+        return -1;
+    }
+    else if(address >= 0xFF00 && address <= 0xFFFF){
+        return memory->internal_memory[address];
+    }
+    return -1;    
+}
+
+uint16_t read_two_bytes(gb_memory *memory, int address){
+    uint8_t byte1 = read_one_byte(memory, address);
+    uint8_t byte2 = read_one_byte(memory, address + 1);
+    return ( (byte1 << 8) | byte2 );
+}
+
+void load_cart_game(gb_memory *memory, uint8_t *game, uint64_t size){
+    memcpy(memory->cartridge_memory, game, size);
 }

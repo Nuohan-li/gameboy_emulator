@@ -44,6 +44,9 @@ void cpu_init(cpu *cpu_ctx, gb_memory *memory){
     write_byte(cpu_ctx->memory, 0xFF4A, 0x00);
     write_byte(cpu_ctx->memory, 0xFF4B, 0x00);
     write_byte(cpu_ctx->memory, 0xFFFF, 0x00);
+
+    // timer counter should be 1024
+    set_timer_counter(cpu_ctx);
 }
 
 uint64_t load_game(cpu *cpu_ctx, const char *game_file){
@@ -60,4 +63,42 @@ uint64_t load_game(cpu *cpu_ctx, const char *game_file){
 
 void execute_opcode(cpu *cpu_ctx, uint16_t opcode){
     printf("Executing opcode: %04X\n", opcode);
+}
+
+
+// TIMER
+
+// testing bit 3 to see if timer is enabled
+bool is_timer_enabled(cpu *cpu_ctx){
+    uint8_t data = read_one_byte(cpu_ctx->memory, TIMER_CONTROLLER_ADDR);
+    if(data & 0b00000100){
+        return true;
+    } else{
+        return false;
+    }
+}
+
+uint8_t get_timer_frequency(cpu *cpu_ctx){
+    return (read_one_byte(cpu_ctx->memory, TIMER_CONTROLLER_ADDR) &0b00000011);
+}
+
+void set_timer_counter(cpu *cpu_ctx){
+    // cpu_ctx->timer_counter = CPU_CLOCK_SPEED_HZ / get_timer_frequency(cpu_ctx);
+    uint8_t bit_pattern = get_timer_frequency(cpu_ctx);
+    switch (bit_pattern){
+    case 0b00:
+        cpu_ctx->timer_counter = 1024; // CPU_CLOCK_SPEED_HZ / 4096 -> timer should increment every 1024 cpu cycles
+        break;
+    case 0b01:
+        cpu_ctx->timer_counter = 16;
+        break;
+    case 0b10:
+        cpu_ctx->timer_counter = 64;
+        break;
+    case 0b11:
+        cpu_ctx->timer_counter = 256;
+        break;
+    default:
+        break;
+    }
 }
