@@ -114,6 +114,10 @@ void update_divider_register(cpu *cpu_ctx, int cycles){
     }
 }
 
+void request_interrupt(cpu *cpu_ctx){
+    return;
+}
+
 // timer (0xFF05) increments at a set frequency, whenever it overflows, it request an interrupt and reset itself to the value storerd at address 0xFF06
 void update_timer(cpu *cpu_ctx, int cycles){
     update_divider_register(cpu_ctx, cycles);

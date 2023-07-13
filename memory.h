@@ -33,7 +33,7 @@ MEMORY MAP
 +-----------+
 | FEA0-FEFF | Not Usable
 +-----------+
-| FF00-FF7F | I/O Ports
+| FF00-FF7F | I/O Ports ------> special registers live here (gb manual section 2.13)
 +-----------+
 | FF80-FFFE | High RAM (HRAM)
 +-----------+

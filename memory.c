@@ -46,6 +46,7 @@ bool enable_ram(gb_memory *memory, uint16_t address, uint8_t data){
     return false;
 }
 
+// there are two ways used by games to change rom banks,
 void change_rom_bank_lo(gb_memory *memory, uint8_t data){
     if(memory->rom_banking_mode == MBC2){
         memory->current_rom_bank = data & 0xF;
@@ -188,7 +189,7 @@ int write_byte(gb_memory *memory, int address, uint8_t data){
     else if(address >= 0xFF00 && address < 0xFFFF){
         if(address == 0xFF04){    // divider register is set to 0, if a game writes to it
             memory->internal_memory[0xFF04] = 0;
-            return;
+            return 0;
         }
         memory->internal_memory[address] = data;
     }
