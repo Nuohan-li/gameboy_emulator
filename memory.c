@@ -186,6 +186,10 @@ int write_byte(gb_memory *memory, int address, uint8_t data){
     }
 
     else if(address >= 0xFF00 && address < 0xFFFF){
+        if(address == 0xFF04){    // divider register is set to 0, if a game writes to it
+            memory->internal_memory[0xFF04] = 0;
+            return;
+        }
         memory->internal_memory[address] = data;
     }
 

@@ -6,6 +6,7 @@
 // initialize the CPU -> set everything to 0, then set the specific 
 void cpu_init(cpu *cpu_ctx, gb_memory *memory){
     cpu_ctx->memory = memory;
+    init_gb_memory(memory);
 
     cpu_ctx->PC.value = 0x100 ;
     cpu_ctx->AF.value = 0x01B0;
@@ -47,6 +48,7 @@ void cpu_init(cpu *cpu_ctx, gb_memory *memory){
 
     // timer counter should be 1024
     set_timer_counter(cpu_ctx);
+    cpu_ctx->divider_counter = 256;
 }
 
 uint64_t load_game(cpu *cpu_ctx, const char *game_file){
@@ -100,5 +102,32 @@ void set_timer_counter(cpu *cpu_ctx){
         break;
     default:
         break;
+    }
+}
+
+void update_divider_register(cpu *cpu_ctx, int cycles){
+    cpu_ctx->divider_counter -= cycles;
+    if(cpu_ctx->divider_counter <= 0){
+        cpu_ctx->divider_counter = 256;
+        cpu_ctx->memory->internal_memory[0xFF04]++;  // incrementing using memory because gameboy doesn't allow games to
+                                                   // to do it, if games write to it, it sets this register value to 0
+    }
+}
+
+// timer (0xFF05) increments at a set frequency, whenever it overflows, it request an interrupt and reset itself to the value storerd at address 0xFF06
+void update_timer(cpu *cpu_ctx, int cycles){
+    update_divider_register(cpu_ctx, cycles);
+    if(is_timer_enabled(cpu_ctx)){
+        if(cpu_ctx->timer_counter <= 0){
+            set_timer_counter(cpu_ctx);
+
+            if(read_one_byte(cpu_ctx->memory, TIMER_ADDR) == 255){  // timer is about to overflow
+                write_byte(cpu_ctx->memory, TIMER_ADDR, read_one_byte(cpu_ctx->memory, TIMER_RESET_VALUE_ADDR));
+                request_interrupt(cpu_ctx);  // to be implemented
+            } 
+        } else {
+            int new_timer_value = read_one_byte(cpu_ctx->memory, TIMER_ADDR) + 1;
+            write_byte(cpu_ctx->memory, TIMER_ADDR, new_timer_value);
+        }
     }
 }
