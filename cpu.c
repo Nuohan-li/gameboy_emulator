@@ -157,7 +157,7 @@ void push_two_bytes(cpu *cpu_ctx, uint16_t value){
 uint8_t pop(cpu *cpu_ctx){
     if(cpu_ctx->SP.value <= STACK_ADDR){
         log_trace(true, "cpu.c pop: Nothing to pop");
-        return;
+        return -1;
     }
     uint8_t value = read_one_byte(cpu_ctx->memory, cpu_ctx->SP.value);
     cpu_ctx->SP.value--;
@@ -167,7 +167,7 @@ uint8_t pop(cpu *cpu_ctx){
 uint16_t pop_two_bytes(cpu *cpu_ctx){
     if(cpu_ctx->SP.value <= STACK_ADDR + 1){
         log_trace(true, "cpu.c pop: Nothing to pop");
-        return;
+        return -1;
     }
     uint16_t value = read_two_bytes(cpu_ctx->memory, cpu_ctx->SP.value);
     cpu_ctx->SP.value -= 2;
