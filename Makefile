@@ -21,7 +21,7 @@ endif
 all: $(EXECUTABLE)
 
 # Source files
-SRCS = main.c memory.c cpu.c debug.c 
+SRCS = main.c memory.c cpu.c debug.c interrupt.c
 
 # Build the executable
 $(EXECUTABLE): $(SRCS)
