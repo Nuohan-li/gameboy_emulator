@@ -51,6 +51,8 @@ void cpu_init(cpu *cpu_ctx, gb_memory *memory){
     // timer counter should be 1024
     set_timer_counter(cpu_ctx);
     cpu_ctx->divider_counter = 256;
+    
+    // display init
 }
 
 uint64_t load_game(cpu *cpu_ctx, const char *game_file){

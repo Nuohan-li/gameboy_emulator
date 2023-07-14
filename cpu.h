@@ -5,8 +5,8 @@
 #include <stdint.h>
 #include "common.h"
 #include "memory.h"
-// #include "display.h"
-// #include "input.h"
+#include "display.h"
+#include "input.h"
 
 // cpu defines 
 // for flag see GBManual P.62
@@ -81,6 +81,13 @@ typedef struct cpu{
 
     // interrupt
     bool interrupt_master_switch; // see interrupt.h for explanation
+
+    // display
+    display *display;
+
+    // input 
+    
+
 } cpu;
 
 void cpu_init(cpu *cpu_ctx, gb_memory *memory);
