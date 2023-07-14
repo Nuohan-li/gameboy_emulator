@@ -56,3 +56,7 @@
 #define INTERRUPT_ENABLE 0XFFFF
 
 void request_interrupt(cpu *cpu_ctx, int bit_position);
+void interrupt_vblank();
+void interrupt_lcd();
+void interrupt_timer();
+void interrupt_joypad();
