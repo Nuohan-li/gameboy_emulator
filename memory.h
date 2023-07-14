@@ -10,6 +10,7 @@
 #define GAME_MEM_SPACE_BEGINNING 512
 #define ROM_MAX_SIZE_BYTES 0x200000 
 #define NUM_BANKING_MODES 26
+#define STACK_ADDR 0xFF80
 
 /*
 https://gbdev.io/pandocs/Memory_Map.html
@@ -35,7 +36,7 @@ MEMORY MAP
 +-----------+
 | FF00-FF7F | I/O Ports ------> special registers live here (gb manual section 2.13)
 +-----------+
-| FF80-FFFE | High RAM (HRAM)
+| FF80-FFFE | High RAM (HRAM) --> Stack
 +-----------+
 | FFFF      | Interrupt Enable Register
 +-----------+

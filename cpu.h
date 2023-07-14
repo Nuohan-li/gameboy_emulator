@@ -78,6 +78,9 @@ typedef struct cpu{
     // game boy manual does not specify the initial value of this register
     // defaulting it to 0 upon cpu initialization (done by memory init), not sure if it's correct?
     int divider_counter;  // this counter counts up to 256, once reached its reset and divider_register value ++
+
+    // interrupt
+    bool interrupt_master_switch; // see interrupt.h for explanation
 } cpu;
 
 void cpu_init(cpu *cpu_ctx, gb_memory *memory);
@@ -92,3 +95,8 @@ void set_timer_counter(cpu *cpu_ctx);
 
 void update_divider_register(cpu *cpu_ctx, int cycles);
 
+// stack
+void push(cpu *cpu_ctx, uint8_t value);
+void push_two_bytes(cpu *cpu_ctx, uint16_t value);
+uint8_t pop(cpu *cpu_ctx);
+uint16_t pop_two_bytes(cpu *cpu_ctx);

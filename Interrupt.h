@@ -47,15 +47,29 @@
 #include <stdio.h>
 #include "cpu.h"
 
-#define VBLANK_BIT_POS 0
-#define LCD_BIT_POS 1
-#define TIMER_BIT_POS 2
-#define JOYPAD_BIT_POS 4
+#define VBLANK 0
+#define VBLANK_ROUTINE 0x0040
+#define LCD 1
+#define LCD_ROUTINE 0x0048
+#define TIMER 2
+#define TIMER_ROUTINE 0x0050
+#define JOYPAD 4
+#define JOYPAD_ROUTINE 0x0060
 
 #define INTERRUPT_REQ_REG 0xFF0F
 #define INTERRUPT_ENABLE 0XFFFF
 
 void request_interrupt(cpu *cpu_ctx, int bit_position);
+void check_interrupt(cpu *cpu_ctx);
+
+// the interrupt routines are stored at the following address:
+// V-Blank: 0x40
+// LCD: 0x48
+// TIMER: 0x50
+// JOYPAD: 0x60
+// so to invokde these, we simply set program counter to the above address
+void service_interrupt(cpu *cpu_ctx, int interrupt);
+
 void interrupt_vblank();
 void interrupt_lcd();
 void interrupt_timer();

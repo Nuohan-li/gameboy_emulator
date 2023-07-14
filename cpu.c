@@ -3,6 +3,7 @@
 #include "cpu.h"
 #include "memory.h"
 #include "Interrupt.h"
+#include "debug.h"
 
 // initialize the CPU -> set everything to 0, then set the specific 
 void cpu_init(cpu *cpu_ctx, gb_memory *memory){
@@ -14,7 +15,7 @@ void cpu_init(cpu *cpu_ctx, gb_memory *memory){
     cpu_ctx->BC.value = 0x0013;
     cpu_ctx->DE.value = 0x00D8;
     cpu_ctx->HL.value = 0x014D;
-    cpu_ctx->SP.value = 0xFFFE;
+    cpu_ctx->SP.value = STACK_ADDR;
     write_byte(cpu_ctx->memory, 0xFF05, 0x00);
     write_byte(cpu_ctx->memory, 0xFF06, 0x00);
     write_byte(cpu_ctx->memory, 0xFF07, 0x00);
@@ -124,11 +125,51 @@ void update_timer(cpu *cpu_ctx, int cycles){
 
             if(read_one_byte(cpu_ctx->memory, TIMER_ADDR) == 255){  // timer is about to overflow
                 write_byte(cpu_ctx->memory, TIMER_ADDR, read_one_byte(cpu_ctx->memory, TIMER_RESET_VALUE_ADDR));
-                request_interrupt(cpu_ctx, TIMER_BIT_POS);  // to be implemented
+                request_interrupt(cpu_ctx, TIMER);  // to be implemented
             } 
         } else {
             int new_timer_value = read_one_byte(cpu_ctx->memory, TIMER_ADDR) + 1;
             write_byte(cpu_ctx->memory, TIMER_ADDR, new_timer_value);
         }
     }
+}
+
+// Stack
+
+void push(cpu *cpu_ctx, uint8_t value){
+    if(cpu_ctx->SP.value >= 0xFFFE){
+        log_trace(true, "cpu.c push: Stack overflowed");
+        return;
+    }
+    write_byte(cpu_ctx->memory, cpu_ctx->SP.value, value);
+    cpu_ctx->SP.value++;
+}
+
+void push_two_bytes(cpu *cpu_ctx, uint16_t value){
+    if(cpu_ctx->SP.value >= 0xFFFD){
+        log_trace(true, "cpu.c push_two_bytes: Stack overflowed");
+        return;
+    }
+    memcpy(&cpu_ctx->memory->internal_memory[cpu_ctx->SP.value], &value, sizeof(uint16_t));
+    cpu_ctx->SP.value += 2;
+}
+
+uint8_t pop(cpu *cpu_ctx){
+    if(cpu_ctx->SP.value <= STACK_ADDR){
+        log_trace(true, "cpu.c pop: Nothing to pop");
+        return;
+    }
+    uint8_t value = read_one_byte(cpu_ctx->memory, cpu_ctx->SP.value);
+    cpu_ctx->SP.value--;
+    return value;
+}
+
+uint16_t pop_two_bytes(cpu *cpu_ctx){
+    if(cpu_ctx->SP.value <= STACK_ADDR + 1){
+        log_trace(true, "cpu.c pop: Nothing to pop");
+        return;
+    }
+    uint16_t value = read_two_bytes(cpu_ctx->memory, cpu_ctx->SP.value);
+    cpu_ctx->SP.value -= 2;
+    return value;
 }

@@ -194,7 +194,7 @@ void test(){
     printf("initial timer enabled: %s\n", timer_enabled? "true" : "false"); // should be false
 
     
-    // TODO: timer test
+    // TODO: timer test, interrupt test, stack test
 
 // 0000     00 00 00 00 00 00 00 00 00 00 00 80 BF F3 00 BF  00 3F 00 00 BF 7F FF 9F 00 BF 00 FF 00 00 BF 77  .................?.............w
 // 0032     F3 F1 00 00 00 00 00 00 00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00 00 00 00 91 00 00 00 00  ................................
