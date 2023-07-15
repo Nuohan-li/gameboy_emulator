@@ -191,6 +191,10 @@ int write_byte(gb_memory *memory, int address, uint8_t data){
             memory->internal_memory[0xFF04] = 0;
             return 0;
         }
+        else if(address == 0xFF44){ // if game attempts to write to Y coordinate (current scanline), reset it to 0
+            memory->internal_memory[0xFF44] = 0;
+            return 0;
+        }
         memory->internal_memory[address] = data;
     }
 

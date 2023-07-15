@@ -98,6 +98,7 @@ void execute_opcode(cpu *cpu_ctx, uint16_t opcode);
 void update_timer(cpu *cpu_ctx, int cycles);
 bool is_timer_enabled(cpu *cpu_ctx);
 uint8_t get_timer_frequency(cpu *cpu_ctx);
+void set_timer_frequency(cpu *cpu_ctx, uint8_t frequency);
 void set_timer_counter(cpu *cpu_ctx);
 
 void update_divider_register(cpu *cpu_ctx, int cycles);

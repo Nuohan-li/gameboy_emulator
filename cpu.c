@@ -53,6 +53,7 @@ void cpu_init(cpu *cpu_ctx, gb_memory *memory){
     cpu_ctx->divider_counter = 256;
     
     // display init
+    display_init(cpu_ctx->display);
 }
 
 uint64_t load_game(cpu *cpu_ctx, const char *game_file){
@@ -86,6 +87,17 @@ bool is_timer_enabled(cpu *cpu_ctx){
 
 uint8_t get_timer_frequency(cpu *cpu_ctx){
     return (read_one_byte(cpu_ctx->memory, TIMER_CONTROLLER_ADDR) &0b00000011);
+}
+
+void set_timer_frequency(cpu *cpu_ctx, uint8_t frequency){
+    if(frequency > 4 || frequency < 0){
+        log_trace(true, "cpu.c set_timer_frequency: frequency (lower 2 bits of 0xFF07) must be a value between 0 and 4");
+        return;
+    }
+    uint8_t current_timer_ctrl_val = read_one_byte(cpu_ctx->memory, TIMER_CONTROLLER_ADDR) ;
+    uint8_t timer_freq = (current_timer_ctrl_val & 0b11111100) | frequency;  
+    write_byte(cpu_ctx->memory, TIMER_CONTROLLER_ADDR, timer_freq);
+    set_timer_counter(cpu_ctx);
 }
 
 void set_timer_counter(cpu *cpu_ctx){
@@ -156,14 +168,14 @@ void push_two_bytes(cpu *cpu_ctx, uint16_t value){
     cpu_ctx->SP.value += 2;
 }
 
+// SP points to 1 address above the top item in stack
 uint8_t pop(cpu *cpu_ctx){
     if(cpu_ctx->SP.value <= STACK_ADDR){
         log_trace(true, "cpu.c pop: Nothing to pop");
         return -1;
     }
-    uint8_t value = read_one_byte(cpu_ctx->memory, cpu_ctx->SP.value);
     cpu_ctx->SP.value--;
-    return value;
+    return read_one_byte(cpu_ctx->memory, cpu_ctx->SP.value);
 }
 
 uint16_t pop_two_bytes(cpu *cpu_ctx){
@@ -171,7 +183,6 @@ uint16_t pop_two_bytes(cpu *cpu_ctx){
         log_trace(true, "cpu.c pop: Nothing to pop");
         return -1;
     }
-    uint16_t value = read_two_bytes(cpu_ctx->memory, cpu_ctx->SP.value);
     cpu_ctx->SP.value -= 2;
-    return value;
+    return read_two_bytes(cpu_ctx->memory, cpu_ctx->SP.value);
 }

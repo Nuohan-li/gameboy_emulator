@@ -175,6 +175,48 @@ void dump_game_content(char *file_name){
 //     }
 // }
 
+void test_timer(cpu *cpu_ctx) {
+    // Enable timer
+    write_byte(cpu_ctx->memory, TIMER_CONTROLLER_ADDR, 0b00000100);
+
+    // Set timer frequency to 262144 Hz (0b01)
+    set_timer_frequency(cpu_ctx, 0b11);
+    printf("current timer counter = %u\n", cpu_ctx->timer_counter); // should print 256
+    // Update the timer for 100 cycles
+    update_timer(cpu_ctx, 100);
+
+    // Check the timer value
+    uint8_t timerValue = read_one_byte(cpu_ctx->memory, TIMER_ADDR);
+    printf("Timer Value: %d\n", timerValue); // should print 1
+
+    // Disable timer
+    write_byte(cpu_ctx->memory, TIMER_CONTROLLER_ADDR, 0x00);
+}
+
+void test_stack(cpu *cpu_ctx) {
+    // Push values onto the stack
+    push(cpu_ctx, 0x12);
+    push(cpu_ctx, 0x34);
+    push(cpu_ctx, 0x56);
+
+    // Pop values from the stack
+    uint8_t value1 = pop(cpu_ctx);
+    uint8_t value2 = pop(cpu_ctx);
+    uint8_t value5 = pop(cpu_ctx);
+    
+    // Print the popped values
+    printf("Popped Values: 0x%02X, 0x%02X, 0x%02X\n", value1, value2, value5);
+
+    push_two_bytes(cpu_ctx, 0x1234);
+    push_two_bytes(cpu_ctx, 0x5678);
+
+    uint16_t value3 = pop_two_bytes(cpu_ctx);
+    uint16_t value4 = pop_two_bytes(cpu_ctx);
+
+    printf("Popped Values: 0x%04X, 0x%04X\n", value3, value4);
+}
+
+
 void test(){
     // CPU init test 
     static cpu cpu;
@@ -195,6 +237,10 @@ void test(){
 
     
     // TODO: timer test, interrupt test, stack test
+    printf("================= Timer test ====================\n");
+    test_timer(&cpu);
+    printf("================= Stack test ====================\n");
+    test_stack(&cpu);
 
 // 0000     00 00 00 00 00 00 00 00 00 00 00 80 BF F3 00 BF  00 3F 00 00 BF 7F FF 9F 00 BF 00 FF 00 00 BF 77  .................?.............w
 // 0032     F3 F1 00 00 00 00 00 00 00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00 00 00 00 91 00 00 00 00  ................................
