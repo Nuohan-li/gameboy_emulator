@@ -1,4 +1,6 @@
-#pragma once
+#ifndef DEBUG_H
+#define DEBUG_H
+
 
 #include <stdio.h>
 #include <stdint.h>
@@ -16,3 +18,5 @@ void log_trace(bool write_to_file, const char *format, ...);
 void log_opcode();
 void debugger(cpu *cpu_ctx);
 void test();
+
+#endif

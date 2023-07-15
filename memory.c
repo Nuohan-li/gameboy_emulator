@@ -195,6 +195,10 @@ int write_byte(gb_memory *memory, int address, uint8_t data){
             memory->internal_memory[0xFF44] = 0;
             return 0;
         }
+        else if(address == 0xFF46){ // DMA
+            DMA_transfer(memory, data);
+            return 0;
+        } 
         memory->internal_memory[address] = data;
     }
 
@@ -243,4 +247,12 @@ uint16_t read_two_bytes(gb_memory *memory, int address){
 
 void load_cart_game(gb_memory *memory, uint8_t *game, uint64_t size){
     memcpy(memory->cartridge_memory, game, size);
+}
+
+
+void DMA_transfer(gb_memory *memory, uint8_t data){
+    uint16_t address = data << 8;
+    for(int i = 0; i < OAM_SIZE; i++){
+        write_byte(memory, OAM_STARTING_ADDR + i, read_one_byte(memory, address));
+    }
 }

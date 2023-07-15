@@ -1,4 +1,6 @@
-#pragma once
+#ifndef MEMORY_H
+#define MEMORY_H
+
 
 #include <stdio.h>
 #include <stdint.h>
@@ -11,6 +13,9 @@
 #define ROM_MAX_SIZE_BYTES 0x200000 
 #define NUM_BANKING_MODES 26
 #define STACK_ADDR 0xFF80
+#define DMA_ADDR 0xFF46
+#define OAM_SIZE 0xA0
+#define OAM_STARTING_ADDR 0xFE00
 
 /*
 https://gbdev.io/pandocs/Memory_Map.html
@@ -92,3 +97,15 @@ uint16_t read_two_bytes(gb_memory *memory, int address);
 void load_cart_game(gb_memory *memory, uint8_t *game, uint64_t size); 
 void set_rom_banking_mode(gb_memory *memory);
 rom_banking_modes get_rom_banking_mode(gb_memory *memory);
+
+// direct memory access
+/*
+    DMA is launched when a game writes to 0xFF46. It is used for CPU to copy data to OAM or sprite RAM
+    Note that this can only happen during mode 2 of LCD
+    the address of data to be copied to OAM is the data written to 0xFF46 left shifted by 8 bits
+
+*/
+void DMA_transfer(gb_memory *memory, uint8_t data);
+
+
+#endif

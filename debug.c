@@ -219,9 +219,12 @@ void test_stack(cpu *cpu_ctx) {
 
 void test(){
     // CPU init test 
+
     static cpu cpu;
     static gb_memory memory;
-    cpu_init(&cpu, &memory);    
+    static display screen;
+    printf("================= CPU init test ====================\n");
+    cpu_init(&cpu, &memory, &screen);    
     dump_memory(&cpu.memory->internal_memory[0xFF00], 0x7F + 0x7E);
     printf("\n");
     const char *file_name = "GAME/pokemonYellow.gb";

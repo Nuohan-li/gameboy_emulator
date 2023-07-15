@@ -42,7 +42,9 @@
 
 // JOYPAD bit 4: 
 // This interupt is requested whenever one of the buttons goes from the unpressed state to the pressed state. 
-#pragma once
+#ifndef INTERRUPT_H
+#define INTERRUPT_H
+
 
 #include <stdio.h>
 #include "cpu.h"
@@ -74,3 +76,5 @@ void interrupt_vblank();
 void interrupt_lcd();
 void interrupt_timer();
 void interrupt_joypad();
+
+#endif
