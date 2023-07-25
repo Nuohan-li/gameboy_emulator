@@ -110,12 +110,7 @@ void push_two_bytes(cpu *cpu_ctx, uint16_t value);
 uint8_t pop(cpu *cpu_ctx);
 uint16_t pop_two_bytes(cpu *cpu_ctx);
 
-
-// graphics
-void update_graphics(cpu *cpu_ctx, int cycles);
-
-// LCD control
-bool is_LCD_enabled(gb_memory *memory);
+/////////////////////////////////////// LCD /////////////////////////////////////////
 
 /*
     Setting LCD status is probably one of the most confusing part. The LCD goes through 4 different modes. 
@@ -178,6 +173,54 @@ bool is_LCD_enabled(gb_memory *memory);
     During this mode, the CPU cannot access VRAM.
 */ 
 void set_LCD_status(cpu *cpu_ctx);
+bool is_LCD_enabled(gb_memory *memory);
+
+/////////////////// LCD controller //////////////////////
+/*
+    - Bit 7: checks if the LCD is enabled, if not, we don't draw anything -> handled in update_graphics function 
+    - Bit 6: Read the tile identity number to draw onto the screen
+    - Bit 5: If this is set to 0 then the window is not enabled so we dont draw it
+    - Bit 4:
+    - Bit 3: This is the same as Bit6 but for the background not the window
+    - Bit 2: This is the size of the sprites that need to draw. Unlike tiles that are always 8x8 sprites can be 8x16
+    - Bit 1: Same as Bit5 but for sprites 
+    - Bit 0: Same as Bit5 but for background
+*/
+
+///////////////////////////////// GRAPHICS //////////////////////////////////////
+
+// The gameboy uses the tile and sprite method of storing and drawing graphics to the screen. The tiles are what form the
+// background and are not interactive. Each tile is 8x8 pixels. The sprites are the interactive graphics on the display. 
+// An example is the game Mario. The character mario is a sprite. The graphic can move and it can collide with the other 
+// sprites. The bad guys are also sprites as they can fly around and attack mario. The tiles are the background which defines
+// the level and its terrain.
+
+// As stated previously the resolution of the gameboy is 160x144 however this is just what can be displayed on the screen. 
+// The real resolution is 256x256 (32x32 tiles). The visual display can show any 160x144 pixels of the 256x256 background, 
+// this allows for scrolling the viewing area over the background.
+
+// Aswell as having a 256x256 background and a 160x144 viewing the display the gameboy has a window which appears above 
+// the background but behind the sprites (unless the attributes of the sprite specify otherwise, discussed later). The 
+// purpose of the window is to put a fixed panel over the background that does not scroll. For example some games have a 
+// panel on the screen which displays the characters health and collected items, (notably links awakening) and this panel 
+// does not scroll with the background when the character moves. This is the window.
+
+void update_graphics(cpu *cpu_ctx, int cycles);
+void draw_scanline();
+
+void draw_sprite();
+
+/*
+    since we are only drawing 160 x 144 pixels out of 256 x 256 pixels, we need to know where from these 256 x 256 pixels
+    to start drawing -> scrollx, scrolly, windowx, windowy.
+    
+    The gameboy has two regions of memoory for the background layout which is shared by the window. The memory regions are 
+    0x9800-0x9BFF and 0x9C00-9FFF. We need to check bit 3 of the lcd contol register to see which region we are using for 
+    the background and bit 6 for the window. Each byte in the memory region is a tile identification number of what needs 
+    to be drawn. This identification number is used to lookup the tile data in video ram so we know how to draw it.
+
+*/
+void draw_tiles();
 
 
 #endif 

@@ -16,6 +16,10 @@
 #define SCALINE_CLK_COUNTER_INIT_VAL 456
 #define LCD_CTRL_REG_ADDR 0xFF40
 #define LCD_STATUS_REG 0xFF41
+#define LCD_SCROLL_Y 0xFF42 // The Y Position of the BACKGROUND where to start drawing the viewing area from
+#define LCD_SCROLL_X 0xFF43 // The X Position of the BACKGROUND to start drawing the viewing area from
+#define LCD_WINDOW_Y 0xFF4A // The Y Position of the VIEWING AREA to start drawing the window from
+#define LCD_WINDOW_X 0xFF4B // The X Positions -7 of the VIEWING AREA to start drawing the window from
 #define LCD_Y_COORDINATE_REG 0xFF44
 #define LCD_Y_COMPARE_REG 0xFF45
 
@@ -28,6 +32,10 @@ typedef struct display{
 } display;
 
 void display_init(display *display);
+
+
+
+
 
 
 #endif

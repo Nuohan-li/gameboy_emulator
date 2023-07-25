@@ -189,7 +189,10 @@ uint16_t pop_two_bytes(cpu *cpu_ctx){
 }
 
 
-// LCD control
+// ###################################### 
+//             LCD control
+// ######################################
+
 bool is_LCD_enabled(gb_memory *memory){
     return (read_one_byte(memory, LCD_CTRL_REG_ADDR) & 0b10000000);
 }
@@ -269,6 +272,21 @@ void set_LCD_status(cpu *cpu_ctx){
     write_byte(cpu_ctx->memory, LCD_STATUS_REG, LCD_status);
 }
 
+// #################################
+// Graphics
+// #################################
+void draw_scanline(cpu *cpu_ctx){
+    uint8_t lcd_control_byte = read_one_byte(cpu_ctx, LCD_CTRL_REG_ADDR);
+    if(lcd_control_byte & 0b00000001){   // Bit 0 is set
+        draw_tiles();
+    } 
+    else if(lcd_control_byte & 0b00000010){
+        draw_sprite();
+    }
+}
+void draw_sprite();
+void draw_tiles();
+
 void update_graphics(cpu *cpu_ctx, int cycles){
     set_LCD_status(cpu_ctx);
 
@@ -297,7 +315,7 @@ void update_graphics(cpu *cpu_ctx, int cycles){
         }
 
         else if(current_line < 144){
-            // draw current scanline
+            draw_scanline(cpu_ctx);
         }
     }
 }
